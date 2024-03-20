@@ -19,3 +19,19 @@ Welcome to the internal documentation for Localizer, a proprietary Chrome extens
 ## Requirements
 
 - Google Chrome Browser
+
+## Development Process
+
+To ensure a smooth development process for our Localizer Chrome Extension, follow these steps:
+
+1. **Environment Setup:** Make sure you have Node.js and npm installed. Clone the repository and run `npm install` to install all dependencies.
+
+2. **Development Build:** Use the command `npm run build` to compile the TypeScript and React files into JavaScript. This command uses webpack to bundle the application, as specified in `webpack.config.js`.
+
+3. **Testing Changes:** To test your changes, load the `dist` folder as an unpacked extension in Chrome. Navigate to `chrome://extensions/`, enable Developer mode, and click on "Load unpacked". Select the `dist` folder within the project directory.
+
+4. **Watching for Changes:** For a more efficient development workflow, use `npm run watch` to automatically rebuild the project when files are changed. This allows for rapid testing and iteration.
+
+5. **Submitting Changes:** Once you're satisfied with your changes, submit a pull request for review. Ensure your PR includes a detailed description of the changes and any necessary testing instructions.
+
+6. **Review and Merge:** The code will be reviewed by a peer, and upon approval, it will be merged into the main branch. Continuous integration tools will automatically deploy the new version of the extension.
