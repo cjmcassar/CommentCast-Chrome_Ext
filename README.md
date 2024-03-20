@@ -1,46 +1,31 @@
-# Getting Started with Create React App
+# Localizer - Chrome Extension (Internal Documentation)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Welcome to the internal documentation for Localizer, a proprietary Chrome extension developed using React. This tool is designed to enhance our app's localization by automatically testing for optimized localization and capturing screenshots of events or pages that are not properly adapted to different languages. It's a crucial development tool aimed at ensuring our app delivers a seamless and inclusive user experience across various regions.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Automated Localization Testing:** Localizer meticulously scans our app to verify that all elements are accurately localized for the intended target languages.
+- **Screenshot Capture for Review:** It captures screenshots of any page or event within our app that does not pass the localization tests, facilitating quick identification and rectification of such issues.
+- **Developer-Friendly:** With its straightforward setup and user-friendly interface, Localizer is crafted to blend effortlessly into our development process.
+- **Customizable Testing Parameters:** Developers can customize the localization tests to address the unique requirements of our app, ensuring a thorough validation of all functionalities.
 
-### `npm start`
+## Getting Started for Developers
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+1. **Installation:** Add Localizer to your Chrome browser. The installation package can be found in our internal tools repository.
+2. **Configuration:** Launch the Localizer extension and set up your target languages along with specific tests tailored to our app's needs.
+3. **Initiate Localization Tests:** With Localizer activated, navigate through the app. The extension will autonomously identify and screenshot any localization discrepancies.
+4. **Issue Resolution:** Utilize the captured screenshots to pinpoint and resolve any detected localization issues within the app.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Requirements
 
-### `npm test`
+- Google Chrome Browser
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Contributing
 
-### `npm run build`
+As this is an internal tool, we encourage our development team to contribute towards enhancing Localizer. If you have ideas for new features, improvements, or have encountered bugs, please reach out to the project lead or submit your suggestions through our internal issue tracking system.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Note
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Localizer is a proprietary tool developed for internal use. Please ensure that all usage complies with our company's software usage policies and guidelines.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Thank you for contributing to our app's global success by utilizing Localizer to perfect its localization!
