@@ -19,13 +19,3 @@ Welcome to the internal documentation for Localizer, a proprietary Chrome extens
 ## Requirements
 
 - Google Chrome Browser
-
-## Contributing
-
-As this is an internal tool, we encourage our development team to contribute towards enhancing Localizer. If you have ideas for new features, improvements, or have encountered bugs, please reach out to the project lead or submit your suggestions through our internal issue tracking system.
-
-## Note
-
-Localizer is a proprietary tool developed for internal use. Please ensure that all usage complies with our company's software usage policies and guidelines.
-
-Thank you for contributing to our app's global success by utilizing Localizer to perfect its localization!
