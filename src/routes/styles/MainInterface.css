@@ -1,0 +1,26 @@
+.container {
+	font-family: "Arial, sans-serif";
+	width: 300px;
+	margin: auto;
+	padding: 20px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+	font-size: 24px;
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+.section {
+	margin-bottom: 20px;
+}
+
+.instructions {
+	font-size: 14px;
+	margin-bottom: 20px;
+}
+
+.icon {
+	margin-right: 5px;
+}
