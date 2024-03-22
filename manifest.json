@@ -1,10 +1,10 @@
 {
-	"version": "1.0.0",
+	"version": "0.0.1",
 	"manifest_version": 3,
-	"name": "React Chrome Extension",
-	"description": "This is a Chrome extension built with React and TypeScript",
+	"name": "Localizer",
+	"description": "Localizer is a tool that scans your website and pinpoints pages that are not properly localized, then captures screenshots of those pages.",
 	"action": {
 		"default_popup": "js/index.html",
-		"default_title": "React Chrome Extension"
+		"default_title": "Localizer"
 	}
 }
