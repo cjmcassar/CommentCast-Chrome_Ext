@@ -1,6 +1,5 @@
 import { HashRouter, Routes, Route } from "react-router-dom";
 import MainInterface from "./routes/MainInterface";
-import "./App.css";
 
 function App() {
 	return (
