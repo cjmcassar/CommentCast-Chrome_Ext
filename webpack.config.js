@@ -22,7 +22,6 @@ module.exports = {
 				],
 				exclude: /node_modules/,
 			},
-
 			{
 				test: /\.css$/i,
 				use: [
@@ -50,6 +49,10 @@ module.exports = {
 	],
 	resolve: {
 		extensions: [".tsx", ".ts", ".js"],
+		alias: {
+			"@": path.resolve(__dirname, "."),
+			"@/lib/utils": path.resolve(__dirname, "lib/utils"),
+		},
 	},
 	output: {
 		path: path.join(__dirname, "dist/js"),
