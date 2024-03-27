@@ -1,20 +1,21 @@
-# Localizer - Chrome Extension (Internal Documentation)
+# commentcast - Chrome Extension (Internal Documentation)
 
-Welcome to the internal documentation for Localizer, a proprietary Chrome extension developed using React. This tool is designed to enhance our app's localization by automatically testing for optimized localization and capturing screenshots of events or pages that are not properly adapted to different languages. It's a crucial development tool aimed at ensuring our app delivers a seamless and inclusive user experience across various regions.
+Welcome to the internal documentation for commentcast, a proprietary Chrome extension developed using React. This tool is designed to enhance our app's user experience by enabling companies to allow their users to make comments directly on the UI of the app, which can be viewed internally by their engineers or product managers. It's a crucial development tool aimed at ensuring our app delivers a seamless and inclusive user experience across various regions by capturing and managing UI feedback efficiently.
 
 ## Features
 
-- **Automated Localization Testing:** Localizer meticulously scans our app to verify that all elements are accurately localized for the intended target languages.
-- **Screenshot Capture for Review:** It captures screenshots of any page or event within our app that does not pass the localization tests, facilitating quick identification and rectification of such issues.
-- **Developer-Friendly:** With its straightforward setup and user-friendly interface, Localizer is crafted to blend effortlessly into our development process.
-- **Customizable Testing Parameters:** Developers can customize the localization tests to address the unique requirements of our app, ensuring a thorough validation of all functionalities.
+- **Overlayed UI Commenting:** commentcast allows users to overlay comments directly on the UI, making it easier to understand and address user feedback.
+- **Easy Installation:** With a simple installation process, commentcast can be set up and ready to use in no time.
+- **Ability to Save Different Comments:** Users can save different comments for future reference or to share with others.
+- **Toggle Comments On and Off:** Users have the option to toggle comments on and off, providing flexibility in their viewing experience.
 
 ## Getting Started for Developers
 
-1. **Installation:** Add Localizer to your Chrome browser. The installation package can be found in our internal tools repository.
-2. **Configuration:** Launch the Localizer extension and set up your target languages along with specific tests tailored to our app's needs.
-3. **Initiate Localization Tests:** With Localizer activated, navigate through the app. The extension will autonomously identify and screenshot any localization discrepancies.
-4. **Issue Resolution:** Utilize the captured screenshots to pinpoint and resolve any detected localization issues within the app.
+1. **Installation:** Add commentcast to your Chrome browser. The installation package can be found in our internal tools repository.
+2. **Configuration:** Launch the commentcast extension and set up your target audiences along with specific parameters tailored to our app's needs for efficient UI feedback collection.
+3. **Initiate UI Feedback Collection:** With commentcast activated, navigate through the app. The extension will highlight areas that your cursor hovers over. Click to then open a text box to begin commenting.
+
+4. **Issue Resolution:** Utilize the captured comments to pinpoint and resolve any detected issues within the app related to UI feedback collection.
 
 ## Requirements
 
@@ -22,7 +23,7 @@ Welcome to the internal documentation for Localizer, a proprietary Chrome extens
 
 ## Development Process
 
-To ensure a smooth development process for our Localizer Chrome Extension, follow these steps:
+To ensure a smooth development process for our commentcast Chrome Extension, follow these steps:
 
 1. **Environment Setup:** Make sure you have Node.js and npm installed. Clone the repository and run `npm install` to install all dependencies.
 
