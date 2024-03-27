@@ -1,10 +1,10 @@
 {
 	"version": "0.0.1",
 	"manifest_version": 3,
-	"name": "Localizer",
-	"description": "Localizer is a tool that scans your website and pinpoints pages that are not properly localized, then captures screenshots of those pages.",
+	"name": "commentcast",
+	"description": "commentcast is a tool that allows users to make comments directly on your website.",
 	"action": {
 		"default_popup": "js/index.html",
-		"default_title": "Localizer"
+		"default_title": "commentcast"
 	}
 }
