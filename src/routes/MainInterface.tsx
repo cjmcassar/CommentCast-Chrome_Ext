@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
 import { highlightElements } from "../scripts/highlightElement";
-import { useEffect } from "react";
 
 const MainInterface = () => {
 	return (
