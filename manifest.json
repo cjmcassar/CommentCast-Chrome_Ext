@@ -7,7 +7,7 @@
 		"default_popup": "js/index.html",
 		"default_title": "commentcast"
 	},
-	"permissions": ["scripting", "activeTab"],
+	"permissions": ["scripting", "activeTab", "storage", "tabs"],
 	"content_scripts": [
 		{
 			"matches": ["<all_urls>"],
