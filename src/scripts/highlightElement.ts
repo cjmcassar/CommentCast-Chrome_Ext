@@ -12,6 +12,14 @@ export const highlightElements = () => {
 							files: ["js/content.js"],
 						})
 						.then(() => console.log("injected script file"));
+
+					chrome.tabs.sendMessage(
+						tabs[0].id,
+						{ toggle: true },
+						function (response) {
+							console.log("Toggle message sent to content script.");
+						},
+					);
 				}
 			});
 		});
