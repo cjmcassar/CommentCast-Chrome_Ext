@@ -1,0 +1,4 @@
+/* Example: Highlight with a shadow */
+.highlight-hover {
+	box-shadow: 0px 0px 8px red;
+}
