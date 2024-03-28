@@ -1,12 +1,20 @@
 // content.js
-let highlightingEnabled = true;
+let highlightingEnabled: boolean;
 // Function to add or remove event listeners
-function toggleHighlighting(enable: boolean) {
-	if (enable) {
+function toggleHighlighting(highlightingEnabled: boolean) {
+	chrome.storage.local.set({ highlightingEnabled: highlightingEnabled }, () => {
+		console.log(
+			"Updated highlightingEnabled in storage to:",
+			highlightingEnabled,
+		); // Confirm storage update
+	});
+
+	if (highlightingEnabled) {
 		console.log("------->highlighting is enabled");
 		document.addEventListener("mouseover", highlightElement);
 		document.addEventListener("mouseout", removeHighlight);
 	} else {
+		console.log("------->highlighting is disabled");
 		document.removeEventListener("mouseover", highlightElement);
 		document.removeEventListener("mouseout", removeHighlight);
 		// Optionally, remove existing highlights
@@ -36,11 +44,15 @@ function removeHighlight(event: MouseEvent) {
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 	if (message.toggle) {
 		highlightingEnabled = !highlightingEnabled;
+		console.log("Toggling highlightingEnabled to:", highlightingEnabled); // Log the toggled state
 		toggleHighlighting(highlightingEnabled);
 	}
 });
 
-// Initialize with highlighting disabled
-toggleHighlighting(highlightingEnabled);
+chrome.storage.local.get("highlightingEnabled", function (data) {
+	highlightingEnabled = data.highlightingEnabled ?? false;
+	console.log("Initial highlightingEnabled from storage:", highlightingEnabled); // Log the initial state from storage
+	toggleHighlighting(highlightingEnabled);
+});
 
 export {};
