@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
 import { highlightElements } from "../scripts/highlightElement";
+import { useEffect } from "react";
 
 const MainInterface = () => {
 	return (
@@ -19,7 +20,6 @@ const MainInterface = () => {
 				<div className=" flex justify-center mb-6 space-x-2">
 					<button
 						className="relative inline-block text-lg group"
-						id="highlightButton"
 						onClick={highlightElements}
 					>
 						<span className="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
