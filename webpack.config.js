@@ -5,6 +5,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 module.exports = {
 	entry: {
 		index: "./src/index.tsx",
+		content: "./src/scripts/content.ts",
 	},
 	cache: false,
 	mode: "production",
