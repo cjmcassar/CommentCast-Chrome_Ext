@@ -6,7 +6,7 @@ module.exports = {
 	entry: {
 		index: "./src/index.tsx",
 		content: "./src/scripts/screenshotContent.ts",
-		background: "./src/scripts/background.ts",
+		background: "./src/scripts/screenshotBackground.ts",
 	},
 	cache: false,
 	mode: "production",

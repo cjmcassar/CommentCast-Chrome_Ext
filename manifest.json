@@ -13,7 +13,8 @@
 		"activeTab",
 		"storage",
 		"tabs",
-		"background"
+		"background",
+		"debugger"
 	],
 	"background": {
 		"service_worker": "js/background.js",
