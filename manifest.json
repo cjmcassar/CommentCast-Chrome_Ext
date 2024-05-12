@@ -7,7 +7,18 @@
 		"default_popup": "js/index.html",
 		"default_title": "commentcast"
 	},
-	"permissions": ["scripting", "activeTab", "storage", "tabs"],
+	"permissions": [
+		"scripting",
+		"nativeMessaging",
+		"activeTab",
+		"storage",
+		"tabs",
+		"background"
+	],
+	"background": {
+		"service_worker": "js/background.js",
+		"type": "module"
+	},
 	"content_scripts": [
 		{
 			"matches": ["<all_urls>"],
