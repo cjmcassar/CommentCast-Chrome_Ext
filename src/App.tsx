@@ -10,7 +10,7 @@ function App() {
 				{/* <Route path="/login" element={<LoginPage />} /> */}
 				<Route path="/" element={<MainInterface />} />
 				<Route path="/configure" element={<Configure />} />
-				<Route path="/languages" element={<Languages />} />
+				{/* <Route path="/languages" element={<Languages />} /> */}
 				{/* Other routes can go here */}
 			</Routes>
 		</HashRouter>
