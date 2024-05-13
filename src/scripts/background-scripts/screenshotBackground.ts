@@ -1,24 +1,24 @@
 //chrome
-
 let isListenerAdded = false;
-
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-	console.log("background listener added");
-	if (!isListenerAdded) {
-		chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
-			messageListener(req, sendResponse, tab);
-		});
-		isListenerAdded = true;
-	}
-});
+export function screenshotBackground() {
+	chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+		console.log("background listener added");
+		if (!isListenerAdded) {
+			chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
+				messageListener(req, sendResponse, tab);
+			});
+			isListenerAdded = true;
+		}
+	});
+}
 
 const takeShot = async (windowId: number) => {
 	try {
-		let imgUrl64 = await chrome.tabs.captureVisibleTab(windowId, {
-			format: "jpeg",
-			quality: 80,
-		});
-		// let imgUrl64 = "test";
+		// let imgUrl64 = await chrome.tabs.captureVisibleTab(windowId, {
+		// 	format: "jpeg",
+		// 	quality: 80,
+		// });
+		let imgUrl64 = "test";
 		console.log(imgUrl64);
 		chrome.runtime.sendMessage({
 			msg: "update_screenshot",
@@ -99,6 +99,8 @@ const getConsoleLogs = async () => {
 	});
 };
 
+// TODO: create function that gets browser information as well
+
 const messageListener = async (
 	req: { msg: string },
 	sendResponse: {
@@ -111,7 +113,6 @@ const messageListener = async (
 		// console.log("take_screenshot");
 		takeShot(tab.windowId)
 			.then(() => {
-				// debuggerAttach(tab.windowId);
 				getConsoleLogs();
 				sendResponse({ status: "Screenshot taken" });
 			})
@@ -124,5 +125,3 @@ const messageListener = async (
 			});
 	}
 };
-
-export {};

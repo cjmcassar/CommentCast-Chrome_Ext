@@ -1,13 +1,11 @@
 // Function to request a screenshot from the background script
-function requestScreenshot() {
+export function requestScreenshot() {
 	console.log("requestScreenshot");
 	try {
 		chrome.runtime.sendMessage({ msg: "take_screenshot" }, function (response) {
 			if (response && response.dataUrl) {
 				console.log("Screenshot URL received:", response.dataUrl);
 				downloadScreenshot(response.dataUrl);
-			} else {
-				console.error("Invalid or no response received:", response);
 			}
 		});
 	} catch (error) {
@@ -29,11 +27,16 @@ function downloadScreenshot(dataUrl: string) {
 	console.log("Screenshot downloaded.");
 }
 
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-	if (message.msg === "update_screenshot") {
-		console.log("Screenshot URL received:", message.imgUrl64);
-		downloadScreenshot(message.imgUrl64);
-	}
-});
-
-export { requestScreenshot };
+export function handleScreenshotUpdate() {
+	chrome.runtime.onMessage.addListener(function (
+		message,
+		sender,
+		sendResponse,
+	) {
+		if (message.msg === "update_screenshot") {
+			console.log("Screenshot URL received:", message);
+			downloadScreenshot(message.imgUrl64);
+		}
+		sendResponse({ success: true });
+	});
+}
