@@ -3,13 +3,19 @@ function requestScreenshot() {
 	console.log("requestScreenshot");
 	try {
 		chrome.runtime.sendMessage({ msg: "take_screenshot" }, function (response) {
-			console.log("Screenshot URL received:", response.dataUrl);
-			downloadScreenshot(response.dataUrl);
+			if (response && response.dataUrl) {
+				console.log("Screenshot URL received:", response.dataUrl);
+				downloadScreenshot(response.dataUrl);
+			} else {
+				console.error("Invalid or no response received:", response);
+			}
 		});
 	} catch (error) {
 		console.error("Failed to send message for screenshot:", error);
 	}
 }
+
+// Remove the below once we have the background script sending the data to the server
 
 // Function to download the screenshot using the data URL
 function downloadScreenshot(dataUrl: string) {
@@ -29,11 +35,5 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 		downloadScreenshot(message.imgUrl64);
 	}
 });
-
-// Initialize the screenshot request on page load
-// document.addEventListener("DOMContentLoaded", function () {
-// 	console.log("DOMContentLoaded");
-// 	requestScreenshot();
-// });
 
 export { requestScreenshot };
