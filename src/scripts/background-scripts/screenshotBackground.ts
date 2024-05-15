@@ -14,11 +14,11 @@ export function screenshotBackground() {
 
 const takeShot = async (windowId: number) => {
 	try {
-		// let imgUrl64 = await chrome.tabs.captureVisibleTab(windowId, {
-		// 	format: "jpeg",
-		// 	quality: 80,
-		// });
-		let imgUrl64 = "test";
+		let imgUrl64 = await chrome.tabs.captureVisibleTab(windowId, {
+			format: "jpeg",
+			quality: 80,
+		});
+		// let imgUrl64 = "test";
 		console.log(imgUrl64);
 		chrome.runtime.sendMessage({
 			msg: "update_screenshot",
