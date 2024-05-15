@@ -14,12 +14,14 @@
 		"storage",
 		"tabs",
 		"background",
-		"debugger"
+		"debugger",
+		"cookies"
 	],
 	"background": {
 		"service_worker": "js/background.js",
 		"type": "module"
 	},
+	"host_permissions": ["https://localhost:3000/*"],
 	"content_scripts": [
 		{
 			"matches": ["<all_urls>"],
