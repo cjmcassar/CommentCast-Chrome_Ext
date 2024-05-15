@@ -1,6 +1,11 @@
 import { Link } from "react-router-dom";
 
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableRow,
+} from "@/src/components/ui/table";
 
 import { requestScreenshot } from "../scripts/content";
 
