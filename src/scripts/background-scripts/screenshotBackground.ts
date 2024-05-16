@@ -1,7 +1,19 @@
-//chrome
+import { supabase } from "../utils/supabase/supabaseClient";
+
 let isListenerAdded = false;
 let currentTabId: number | null = null;
 let isCaptureInProgress = false;
+
+// todo: Add the following information:
+// URL
+// Timestamp
+// Operating System
+// Browser
+// Window size
+// Country
+// Screen Dimensions
+
+// todo: add authentication via the authBackground script
 
 export function screenshotBackground() {
 	chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -41,9 +53,10 @@ export function screenshotBackground() {
 
 const takeShot = async (windowId: number): Promise<string> => {
 	if (isCaptureInProgress) {
-		throw new Error(
+		console.log(
 			"Screenshot capture is already in progress. Please try again later.",
 		);
+		return "";
 	}
 	isCaptureInProgress = true;
 
@@ -85,7 +98,7 @@ const getConsoleLogs = async (): Promise<any[]> => {
 							"1.0",
 							function () {
 								if (chrome.runtime.lastError) {
-									console.error(
+									console.log(
 										`Failed to attach debugger to tab: ${currentTabId}`,
 										chrome.runtime.lastError.message,
 									);
@@ -205,10 +218,6 @@ const getScreenDimensions = (): { width: number; height: number } => {
 	return { width: window.screen.width, height: window.screen.height };
 };
 
-const getTimestamp = (): string => {
-	return new Date().toLocaleString();
-};
-
 // TODO: create function that gets browser information as well
 
 const handleIssueRequest = async (
@@ -221,18 +230,16 @@ const handleIssueRequest = async (
 ) => {
 	if (req.msg === "take_screenshot") {
 		try {
-			const [screenshot, logs, platformInfo, windowSize] = await Promise.all([
+			const [screenshot, logs, platformInfo] = await Promise.all([
 				takeShot(tab.windowId),
-				getConsoleLogs(), // Ensure currentTabId is not null
+				getConsoleLogs(),
 				getPlatformInfo(),
-				getWindowSize(),
 			]);
 			const response = {
 				status: "Success",
 				screenshot,
 				logs,
 				platformInfo,
-				windowSize,
 			};
 			console.log("Response from handleIssueRequest:", response);
 			sendResponse({
@@ -240,8 +247,21 @@ const handleIssueRequest = async (
 				screenshot,
 				logs,
 				platformInfo,
-				windowSize,
 			});
+			const { data, error } = await supabase.from("issue_snapshots").insert([
+				{
+					screenshot: response.screenshot,
+					logs: response.logs,
+					platform_arch: response.platformInfo.platformInfo.arch,
+					platform_os: response.platformInfo.platformInfo.os,
+				},
+			]);
+			if (error) {
+				console.error("Failed to insert data into Supabase:", error);
+				sendResponse({ status: "Error", error: error.message });
+			} else {
+				sendResponse({ status: "Success", data });
+			}
 		} catch (error) {
 			console.error("Failed to take screenshot or get logs:", error);
 			if (error instanceof Error) {
