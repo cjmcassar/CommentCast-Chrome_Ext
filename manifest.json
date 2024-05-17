@@ -15,7 +15,8 @@
 		"tabs",
 		"background",
 		"debugger",
-		"cookies"
+		"cookies",
+		"system.display"
 	],
 	"background": {
 		"service_worker": "js/background.js",
