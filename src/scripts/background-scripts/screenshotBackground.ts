@@ -5,11 +5,7 @@ let currentTabId: number | null = null;
 let isCaptureInProgress = false;
 
 // todo: Add the following information:
-// URL
-// Timestamp
-// Operating System
-// Browser
-// Window size
+
 // Country
 // Screen Dimensions
 
@@ -51,7 +47,7 @@ export function screenshotBackground() {
 	});
 }
 
-const takeShot = async (windowId: number): Promise<string> => {
+const takeScreenshot = async (windowId: number): Promise<string> => {
 	if (isCaptureInProgress) {
 		console.log(
 			"Screenshot capture is already in progress. Please try again later.",
@@ -186,39 +182,58 @@ const getPlatformInfo = async (): Promise<{
 	});
 };
 
-const getWindowSize = async (): Promise<{
-	windowSize: chrome.windows.Window;
-}> => {
+const getCurrentTabUrl = async (): Promise<string> => {
 	return new Promise((resolve, reject) => {
-		chrome.windows.getCurrent((window) => {
-			if (chrome.runtime.lastError) {
-				console.error(
-					"Failed to get window size:",
-					chrome.runtime.lastError.message,
-				);
-				return reject(chrome.runtime.lastError);
+		chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+			if (tabs.length > 0 && tabs[0].url) {
+				resolve(tabs[0].url);
+			} else {
+				reject(new Error("No active tab found or URL is not accessible."));
 			}
-			resolve({ windowSize: window });
 		});
 	});
 };
 
-const getCountry = async (): Promise<string> => {
-	try {
-		const response = await fetch("https://ipapi.co/json/");
-		const data = await response.json();
-		return `${data.country_name} (${data.country_code})`;
-	} catch (error) {
-		console.error("Failed to get country information:", error);
-		return "Unknown";
+const getScreenDimensions = async (): Promise<{
+	width: number;
+	height: number;
+}> => {
+	return new Promise((resolve, reject) => {
+		chrome.system.display.getInfo((displays) => {
+			if (displays.length > 0) {
+				// This gets the dimensions of the primary display
+				// todo: add support for multiple displays
+				// todo: add support for different window sizes
+				const primaryDisplay = displays.find((display) => display.isPrimary);
+				if (primaryDisplay) {
+					resolve({
+						width: primaryDisplay.bounds.width,
+						height: primaryDisplay.bounds.height,
+					});
+				} else {
+					reject(new Error("Primary display not found."));
+				}
+			} else {
+				reject(new Error("No displays found."));
+			}
+		});
+	});
+};
+
+const getBrowserName = (): string => {
+	const userAgent = navigator.userAgent;
+	if (userAgent.includes("Chrome")) {
+		return "Google Chrome";
+	} else if (userAgent.includes("Firefox")) {
+		return "Mozilla Firefox";
+	} else if (userAgent.includes("Safari")) {
+		return "Apple Safari";
+	} else if (userAgent.includes("Edge")) {
+		return "Microsoft Edge";
+	} else {
+		return "Unknown Browser";
 	}
 };
-
-const getScreenDimensions = (): { width: number; height: number } => {
-	return { width: window.screen.width, height: window.screen.height };
-};
-
-// TODO: create function that gets browser information as well
 
 const handleIssueRequest = async (
 	req: { msg: string },
@@ -230,16 +245,29 @@ const handleIssueRequest = async (
 ) => {
 	if (req.msg === "take_screenshot") {
 		try {
-			const [screenshot, logs, platformInfo] = await Promise.all([
-				takeShot(tab.windowId),
+			const [
+				screenshot,
+				logs,
+				platformInfo,
+				url,
+				browserName,
+				primaryDisplayDimensions,
+			] = await Promise.all([
+				takeScreenshot(tab.windowId),
 				getConsoleLogs(),
 				getPlatformInfo(),
+				getCurrentTabUrl(),
+				getBrowserName(),
+				getScreenDimensions(),
 			]);
 			const response = {
 				status: "Success",
 				screenshot,
 				logs,
 				platformInfo,
+				url,
+				browserName,
+				primaryDisplayDimensions,
 			};
 			console.log("Response from handleIssueRequest:", response);
 			sendResponse({
@@ -247,6 +275,9 @@ const handleIssueRequest = async (
 				screenshot,
 				logs,
 				platformInfo,
+				url,
+				browserName,
+				primaryDisplayDimensions,
 			});
 			const { data, error } = await supabase.from("issue_snapshots").insert([
 				{
@@ -254,6 +285,12 @@ const handleIssueRequest = async (
 					logs: response.logs,
 					platform_arch: response.platformInfo.platformInfo.arch,
 					platform_os: response.platformInfo.platformInfo.os,
+					url: response.url,
+					browser_name: response.browserName,
+					primary_display_dimensions: {
+						primary_display_width: response.primaryDisplayDimensions.width,
+						primary_display_height: response.primaryDisplayDimensions.height,
+					},
 				},
 			]);
 			if (error) {
