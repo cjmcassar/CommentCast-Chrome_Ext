@@ -92,6 +92,7 @@ async function handleExistingCookie(
 					"Auth cookie is invalid, signing in anonymously:",
 					userError,
 				);
+				chrome.storage.local.remove("comment-cast-user-session");
 				await handleAnonymousSignIn();
 			}
 		} catch (error) {
@@ -110,6 +111,7 @@ function handleUserAlreadySignedIn(user: User, cookieData: any) {
 			storeUserSession(cookieData);
 		} else {
 			console.log("User session already exists.");
+			chrome.storage.local.remove("comment-cast-anon-session");
 			resolve(user);
 		}
 	});
@@ -170,6 +172,7 @@ async function getExistingSession() {
 			chrome.storage.local.remove("comment-cast-anon-session");
 		} else {
 			console.log("Anonymous session already exists:", existingSession);
+			chrome.storage.local.remove("comment-cast-user-session");
 			return existingSession;
 		}
 	}
