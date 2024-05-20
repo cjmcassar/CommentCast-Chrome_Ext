@@ -6,11 +6,100 @@ const supabaseKey =
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 interface Session {
-	access_token: string;
-	[key: string]: any;
+	session: {
+		access_token: string;
+	};
+}
+
+interface User {
+	user: {
+		id: string;
+	};
 }
 
 export async function signInAnonymously() {
+	getAuthCookie(async (cookie) => {
+		if (cookie) {
+			handleExistingCookie(cookie);
+		} else {
+			console.log("No auth cookie found, signing in anonymously.");
+			await handleAnonymousSignIn();
+		}
+	});
+}
+
+async function handleExistingCookie(cookie: chrome.cookies.Cookie) {
+	console.log("Auth cookie found:", cookie.value);
+	try {
+		const decodedCookie = decodeURIComponent(cookie.value);
+		const cookieData = JSON.parse(decodedCookie);
+		const accessToken = cookieData.access_token;
+
+		const { data: user, error: userError } = await supabase.auth.getUser(
+			accessToken,
+		);
+		if (user.user && !userError) {
+			await handleUserAlreadySignedIn(user, cookieData);
+		} else {
+			console.log("Auth cookie is invalid, signing in anonymously:", userError);
+			await handleAnonymousSignIn();
+		}
+	} catch (error) {
+		console.error("Error parsing auth cookie:", error);
+		await handleAnonymousSignIn();
+	}
+}
+
+async function handleUserAlreadySignedIn(user: User, cookieData: any) {
+	console.log("User is already signed in:", user);
+
+	const existingUserSession = await getExistingUserSession();
+	if (!existingUserSession) {
+		storeUserSession(cookieData);
+	} else {
+		console.log("User session already exists.");
+	}
+}
+
+async function getExistingUserSession() {
+	return new Promise((resolve) => {
+		chrome.storage.local.get(
+			["comment-cast-user-session", "comment-cast-anon-session"],
+			(result) => {
+				resolve(
+					result["comment-cast-user-session"] ||
+						result["comment-cast-anon-session"],
+				);
+			},
+		);
+	});
+}
+
+function storeUserSession(cookieData: any) {
+	chrome.storage.local.set({ "comment-cast-user-session": cookieData }, () => {
+		console.log("User session stored.");
+	});
+}
+
+async function handleAnonymousSignIn() {
+	const existingSession = await getExistingSession();
+	if (existingSession) {
+		return existingSession;
+	}
+
+	const { data, error } = await supabase.auth.signInAnonymously();
+	if (error) {
+		console.error("Error signing in anonymously:", error);
+		return null;
+	}
+
+	chrome.storage.local.set({ "comment-cast-anon-session": data }, () => {
+		console.log("Anonymous session stored.");
+	});
+	return data;
+}
+
+async function getExistingSession() {
 	const existingSession = await new Promise((resolve) => {
 		chrome.storage.local.get("comment-cast-anon-session", (result) => {
 			resolve(result["comment-cast-anon-session"]);
@@ -22,8 +111,6 @@ export async function signInAnonymously() {
 		const { data: user, error: userError } = await supabase.auth.getUser(
 			session.session.access_token,
 		);
-		console.log("user", user);
-		console.log("userError", userError);
 		if (!user.user && userError) {
 			console.log("Existing session is invalid, signing in again:", userError);
 			chrome.storage.local.remove("comment-cast-anon-session");
@@ -32,18 +119,6 @@ export async function signInAnonymously() {
 			return existingSession;
 		}
 	}
-
-	const { data, error } = await supabase.auth.signInAnonymously();
-
-	if (error) {
-		console.error("Error signing in anonymously:", error);
-		return null;
-	}
-
-	chrome.storage.local.set({ "comment-cast-anon-session": data }, () => {
-		console.log("Anonymous session stored.");
-	});
-	return data;
 }
 
 export function getAuthCookie(
@@ -65,5 +140,3 @@ export function getAuthCookie(
 		},
 	);
 }
-
-// Call this function when the extension is loaded to ensure the user is signed in anonymously
