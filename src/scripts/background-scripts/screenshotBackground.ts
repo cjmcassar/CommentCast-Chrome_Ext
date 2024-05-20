@@ -269,35 +269,32 @@ const handleIssueRequest = async (
 				browserName,
 				primaryDisplayDimensions,
 			};
-			console.log("Response from handleIssueRequest:", response);
-			sendResponse({
-				status: "Success",
-				screenshot,
-				logs,
-				platformInfo,
-				url,
-				browserName,
-				primaryDisplayDimensions,
-			});
-			const { data, error } = await supabase.from("issue_snapshots").insert([
-				{
-					screenshot: response.screenshot,
-					logs: response.logs,
-					platform_arch: response.platformInfo.platformInfo.arch,
-					platform_os: response.platformInfo.platformInfo.os,
-					url: response.url,
-					browser_name: response.browserName,
-					primary_display_dimensions: {
-						primary_display_width: response.primaryDisplayDimensions.width,
-						primary_display_height: response.primaryDisplayDimensions.height,
+
+			const { data, error } = await supabase
+				.from("issue_snapshots")
+				.insert([
+					{
+						screenshot: response.screenshot,
+						logs: response.logs,
+						platform_arch: response.platformInfo.platformInfo.arch,
+						platform_os: response.platformInfo.platformInfo.os,
+						url: response.url,
+						browser_name: response.browserName,
+						primary_display_dimensions: {
+							primary_display_width: response.primaryDisplayDimensions.width,
+							primary_display_height: response.primaryDisplayDimensions.height,
+						},
 					},
-				},
-			]);
+				])
+				.select("id");
 			if (error) {
 				console.error("Failed to insert data into Supabase:", error);
 				sendResponse({ status: "Error", error: error.message });
 			} else {
-				sendResponse({ status: "Success", data });
+				// console.log("Inserted data into Supabase:", data);
+				const insertedId = data[0].id; // Get the ID of the inserted record
+				console.log("Inserted record ID:", insertedId);
+				sendResponse({ status: "Success", id: insertedId });
 			}
 		} catch (error) {
 			console.error("Failed to take screenshot or get logs:", error);
