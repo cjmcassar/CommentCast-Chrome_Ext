@@ -1,4 +1,5 @@
 import { supabase } from "../utils/supabase/supabaseClient";
+import { getUser } from "./authBackground";
 
 let isListenerAdded = false;
 let currentTabId: number | null = null;
@@ -10,6 +11,14 @@ let isCaptureInProgress = false;
 // Screen Dimensions
 
 // todo: add authentication via the authBackground script
+
+interface User {
+	user: {
+		user: {
+			id: string;
+		};
+	};
+}
 
 export function screenshotBackground() {
 	chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -222,16 +231,17 @@ const getScreenDimensions = async (): Promise<{
 
 const getBrowserName = (): string => {
 	const userAgent = navigator.userAgent;
-	if (userAgent.includes("Chrome")) {
-		return "Google Chrome";
-	} else if (userAgent.includes("Firefox")) {
-		return "Mozilla Firefox";
-	} else if (userAgent.includes("Safari")) {
-		return "Apple Safari";
-	} else if (userAgent.includes("Edge")) {
-		return "Microsoft Edge";
-	} else {
-		return "Unknown Browser";
+	switch (true) {
+		case userAgent.includes("Chrome"):
+			return "Google Chrome";
+		case userAgent.includes("Firefox"):
+			return "Mozilla Firefox";
+		case userAgent.includes("Safari"):
+			return "Apple Safari";
+		case userAgent.includes("Edge"):
+			return "Microsoft Edge";
+		default:
+			return "Unknown Browser";
 	}
 };
 
@@ -245,7 +255,10 @@ const handleIssueRequest = async (
 ) => {
 	if (req.msg === "take_screenshot") {
 		try {
+			// Get the user ID
+
 			const [
+				user,
 				screenshot,
 				logs,
 				platformInfo,
@@ -253,6 +266,7 @@ const handleIssueRequest = async (
 				browserName,
 				primaryDisplayDimensions,
 			] = await Promise.all([
+				getUser() as Promise<User | undefined>,
 				takeScreenshot(tab.windowId),
 				getConsoleLogs(),
 				getPlatformInfo(),
@@ -261,6 +275,7 @@ const handleIssueRequest = async (
 				getScreenDimensions(),
 			]);
 			const response = {
+				user,
 				status: "Success",
 				screenshot,
 				logs,
@@ -274,6 +289,7 @@ const handleIssueRequest = async (
 				.from("issue_snapshots")
 				.insert([
 					{
+						uuid: response.user?.user.user.id,
 						screenshot: response.screenshot,
 						logs: response.logs,
 						platform_arch: response.platformInfo.platformInfo.arch,
@@ -293,7 +309,7 @@ const handleIssueRequest = async (
 			} else {
 				// console.log("Inserted data into Supabase:", data);
 				const insertedId = data[0].id; // Get the ID of the inserted record
-				console.log("Inserted record ID:", insertedId);
+				console.log("Inserted record ID:", response);
 				sendResponse({ status: "Success", id: insertedId });
 			}
 		} catch (error) {
