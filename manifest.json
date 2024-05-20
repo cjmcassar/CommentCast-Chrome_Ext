@@ -16,7 +16,8 @@
 		"background",
 		"debugger",
 		"cookies",
-		"system.display"
+		"system.display",
+		"notifications"
 	],
 	"background": {
 		"service_worker": "js/background.js",
