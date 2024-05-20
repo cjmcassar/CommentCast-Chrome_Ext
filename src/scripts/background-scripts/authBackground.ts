@@ -1,17 +1,49 @@
-import { v4 as uuidv4 } from "uuid";
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = "https://your-supabase-url.supabase.co";
-const supabaseKey = "your-supabase-key";
+const supabaseUrl = "https://yvdtkxnmiehnrwmjkjxp.supabase.co";
+const supabaseKey =
+	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2ZHRreG5taWVobnJ3bWpranhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTI5NDEyMzIsImV4cCI6MjAyODUxNzIzMn0.g4dgWoHBDONdD6YNQ1SZ6PwL6nfj1L-F5TFq1vI3Fb4";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-function getAnonUUID() {
-	let anonUUID = localStorage.getItem("anon-uuid");
-	if (!anonUUID) {
-		anonUUID = uuidv4();
-		localStorage.setItem("anon-uuid", anonUUID);
+interface Session {
+	access_token: string;
+	[key: string]: any;
+}
+
+export async function signInAnonymously() {
+	const existingSession = await new Promise((resolve) => {
+		chrome.storage.local.get("comment-cast-anon-session", (result) => {
+			resolve(result["comment-cast-anon-session"]);
+		});
+	});
+	if (existingSession) {
+		console.log("existing session", existingSession);
+		const session = existingSession as Session;
+		const { data: user, error: userError } = await supabase.auth.getUser(
+			session.session.access_token,
+		);
+		console.log("user", user);
+		console.log("userError", userError);
+		if (!user.user && userError) {
+			console.log("Existing session is invalid, signing in again:", userError);
+			chrome.storage.local.remove("comment-cast-anon-session");
+		} else {
+			console.log("Anonymous session already exists:", existingSession);
+			return existingSession;
+		}
 	}
-	return anonUUID;
+
+	const { data, error } = await supabase.auth.signInAnonymously();
+
+	if (error) {
+		console.error("Error signing in anonymously:", error);
+		return null;
+	}
+
+	chrome.storage.local.set({ "comment-cast-anon-session": data }, () => {
+		console.log("Anonymous session stored.");
+	});
+	return data;
 }
 
 export function getAuthCookie(
@@ -34,21 +66,4 @@ export function getAuthCookie(
 	);
 }
 
-export async function createIssue(issueData: any) {
-	const anonUUID = getAnonUUID();
-	const { data, error } = await supabase
-		.from("issues")
-		.insert([{ ...issueData, anon_uuid: anonUUID }]);
-	if (error) throw error;
-	return data;
-}
-
-export async function linkIssuesToUser(user_id: string) {
-	const anonUUID = getAnonUUID();
-	const { data, error } = await supabase
-		.from("issues")
-		.update({ user_id: user_id })
-		.match({ anon_uuid: anonUUID });
-	if (error) throw error;
-	return data;
-}
+// Call this function when the extension is loaded to ensure the user is signed in anonymously
