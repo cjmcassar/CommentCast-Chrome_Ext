@@ -1,4 +1,4 @@
-import { getUser, getSession } from "./authBackground";
+import { getUser, getSession, getAuthCookie } from "./authBackground";
 import { getPlatformInfo } from "./screenshot-utils/OSInfoBackground";
 import { getBrowserName } from "./screenshot-utils/browserNameBackground";
 import { getCurrentTabUrl } from "./screenshot-utils/currentTabUrlBackground";
@@ -27,49 +27,38 @@ interface User {
 }
 
 export function screenshotBackground() {
-	chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-		console.log("tab id for tabId", tabId);
-		console.log("tab id for tab.id", tab.id);
-		console.log("changeInfo", changeInfo);
-		if (!isListenerAdded) {
-			console.log(
-				`adding listener for tab id ${currentTabId} = tab id ${tab.id}`,
-			);
-			chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
-				handleIssueRequest(req, sendResponse, tab);
-				return true;
-			});
+	if (!isListenerAdded) {
+		chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+			console.log("tab id for tabId", tabId);
+			console.log("tab id for tab.id", tab.id);
+			console.log("changeInfo", changeInfo);
 
-			isListenerAdded = true;
-			currentTabId = tabId;
-		} else if (
-			isListenerAdded &&
-			currentTabId !== tabId &&
-			changeInfo.status === "loading"
-		) {
-			console.log(
-				`tab id = ${currentTabId} changed to ${tabId}, removing old listener and adding a new one`,
-			);
-			chrome.runtime.onMessage.removeListener((req, sender, sendResponse) => {
-				console.log("removing listener for tab id", currentTabId);
-			});
-			chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
-				handleIssueRequest(req, sendResponse, tab);
-				return true;
-			});
-			currentTabId = tabId;
-		}
-	});
+			if (currentTabId === null || currentTabId !== tabId) {
+				if (currentTabId !== null) {
+					console.log(
+						`tab id = ${currentTabId} changed to ${tabId}, removing old listener and adding a new one`,
+					);
+					// Remove the listener only if it was previously added
+					chrome.runtime.onMessage.removeListener(handleIssueRequest);
+				}
+
+				// Add the listener only once per tab update where conditions are met
+				chrome.runtime.onMessage.addListener(handleIssueRequest);
+
+				currentTabId = tabId;
+			}
+		});
+
+		isListenerAdded = true;
+	}
 }
 
 const handleIssueRequest = async (
-	req: { msg: string },
-	sendResponse: {
-		(response?: any): void;
-		(arg0: { status: string; error?: any }): void;
-	},
-	tab: chrome.tabs.Tab,
+	req: any,
+	sender: chrome.runtime.MessageSender,
+	sendResponse: (response?: any) => void,
 ) => {
+	console.log("handleIssueRequest", req, sender, sendResponse);
 	if (req.msg === "take_screenshot") {
 		try {
 			const [
@@ -84,7 +73,7 @@ const handleIssueRequest = async (
 			] = await Promise.all([
 				getSession() as Promise<Session | undefined>,
 				getUser() as Promise<User | undefined>,
-				takeScreenshot(tab.windowId),
+				takeScreenshot(sender.tab?.windowId as number),
 				getConsoleLogs(),
 				getPlatformInfo(),
 				getCurrentTabUrl(),
@@ -162,5 +151,7 @@ const handleIssueRequest = async (
 				});
 			}
 		}
+		sendResponse({ status: "Success" });
+		return true; // Keep the listener active
 	}
 };
