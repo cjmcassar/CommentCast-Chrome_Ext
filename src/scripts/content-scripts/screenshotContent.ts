@@ -5,9 +5,8 @@ export async function requestScreenshot() {
 	try {
 		const response: { status: string; id: number } = await new Promise(
 			async (resolve, reject) => {
-				chrome.runtime.sendMessage({ msg: "take_screenshot" }, (response) => {
-					console.log("Response in requestScreenshot:", response);
-				});
+				chrome.runtime.sendMessage({ msg: "take_screenshot" });
+				resolve({ status: "sent", id: 0 });
 			},
 		);
 
