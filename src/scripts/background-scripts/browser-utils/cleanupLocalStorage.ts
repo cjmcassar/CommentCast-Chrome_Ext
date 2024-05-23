@@ -4,7 +4,7 @@ export function cleanupLocalStorage() {
 		const allKeys = Object.keys(items);
 		allKeys.forEach((key) => {
 			// Example condition: remove if the URL contains a specific issue number or based on other logic
-			if (items[key].includes("issues")) {
+			if (items[key] === "string" && items[key].includes("issues")) {
 				chrome.storage.local.remove(key, () => {
 					if (chrome.runtime.lastError) {
 						console.error(
