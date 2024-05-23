@@ -1,4 +1,4 @@
-export function createNotification(issueId: number) {
+export function createIssueNotification(issueId: number) {
 	const issueUrl = `http://localhost:3000/issues/${issueId}`;
 	chrome.notifications.create(
 		{
@@ -14,6 +14,25 @@ export function createNotification(issueId: number) {
 			} else {
 				console.log("Notification created with ID:", notificationId);
 				chrome.storage.local.set({ [notificationId]: issueUrl });
+			}
+		},
+	);
+}
+
+export function createSignInNotification() {
+	chrome.notifications.create(
+		{
+			type: "basic",
+			iconUrl: "/public/logo192.png",
+			title: "Authentication Required",
+			message: "You're not signed in. Redirecting you to the dashboard.",
+			isClickable: false,
+		},
+		function (notificationId) {
+			if (chrome.runtime.lastError) {
+				console.error("Notification error:", chrome.runtime.lastError);
+			} else {
+				console.log("Sign-in notification created with ID:", notificationId);
 			}
 		},
 	);
