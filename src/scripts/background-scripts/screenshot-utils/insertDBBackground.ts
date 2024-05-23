@@ -1,4 +1,4 @@
-import { createNotification } from "../browser-utils/createNotification";
+import { createIssueNotification } from "../browser-utils/createNotification";
 
 export async function insertDBBackground(
 	response: any,
@@ -43,7 +43,7 @@ export async function insertDBBackground(
 		});
 	} else {
 		const data = await supabaseResponse.json();
-		createNotification(data[0].id);
+		createIssueNotification(data[0].id);
 		sendResponse({ status: "Success", id: data[0].id });
 	}
 	return true;
