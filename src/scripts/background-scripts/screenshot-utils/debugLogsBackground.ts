@@ -25,7 +25,7 @@ const enableConsoleForTab = async (tabId: number): Promise<void> => {
 					),
 				);
 			} else {
-				console.log("Console enabled for tab:", tabId);
+				// console.log("Console enabled for tab:", tabId);
 				resolve();
 			}
 		});
