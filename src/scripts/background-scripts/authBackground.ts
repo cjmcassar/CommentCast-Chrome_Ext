@@ -12,12 +12,11 @@ interface User {
 	};
 }
 
-// TODO: when user isn't signed in then redirect them to the sign in page on website
-
 export async function getUser(): Promise<User | undefined> {
 	try {
 		const { data: session, error: sessionError } =
 			await supabase.auth.getSession();
+
 		if (sessionError) {
 			console.error("Error retrieving session:", sessionError);
 			return undefined;
