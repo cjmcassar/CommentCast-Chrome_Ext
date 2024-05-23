@@ -1,4 +1,5 @@
 import { appUrl, supabase } from "./auth-utils/utils";
+import { createSignInNotification } from "./browser-utils/createNotification";
 
 interface Session {
 	session: {
@@ -27,14 +28,22 @@ export async function getUser(): Promise<User | undefined> {
 				session.session.access_token,
 			);
 			if (userError) {
-				console.error("Error retrieving user:", userError);
-				chrome.tabs.create({ url: `${appUrl}/login` });
+				console.log("Error retrieving user:", userError);
+				createSignInNotification();
+				setTimeout(() => {
+					chrome.tabs.create({ url: `${appUrl}/login` });
+				}, 2000); // Delay of 1 second before opening the login tab
+
 				return undefined;
 			}
 			return user;
 		} else {
 			console.log("No active session found.");
-			chrome.tabs.create({ url: `${appUrl}/login` });
+			createSignInNotification();
+			setTimeout(() => {
+				chrome.tabs.create({ url: `${appUrl}/login` });
+			}, 2000);
+
 			return undefined;
 		}
 	} catch (error) {
