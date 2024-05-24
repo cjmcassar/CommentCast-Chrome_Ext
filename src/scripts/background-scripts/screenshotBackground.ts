@@ -30,10 +30,6 @@ interface User {
 export function screenshotBackground() {
 	if (!isListenerAdded) {
 		chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-			// console.log("tab id for tabId", tabId);
-			// console.log("tab id for tab.id", tab.id);
-			// console.log("changeInfo", changeInfo);
-
 			if (currentTabId === null || currentTabId !== tabId) {
 				if (currentTabId !== null) {
 					console.log(
