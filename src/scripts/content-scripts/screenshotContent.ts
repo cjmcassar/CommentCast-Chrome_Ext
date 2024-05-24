@@ -3,12 +3,7 @@ import { cleanupLocalStorage } from "../background-scripts/browser-utils/cleanup
 export async function requestScreenshot() {
 	console.log("requestScreenshot initiated");
 	try {
-		const response: { status: string; id: number } = await new Promise(
-			async (resolve, reject) => {
-				chrome.runtime.sendMessage({ msg: "take_screenshot" });
-				resolve({ status: "sent", id: 0 });
-			},
-		);
+		chrome.runtime.sendMessage({ msg: "take_screenshot" });
 
 		cleanupLocalStorage();
 	} catch (error) {
