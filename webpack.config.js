@@ -48,6 +48,7 @@ module.exports = {
 			patterns: [
 				{ from: "manifest.json", to: "../manifest.json" },
 				{ from: "public/logo192.png", to: "../public/logo192.png" },
+				{ from: "public/logo512.png", to: "../public/logo512.png" },
 			],
 		}),
 		...getHtmlPlugins(["index"]),
