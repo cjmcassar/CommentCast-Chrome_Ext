@@ -11,7 +11,8 @@ function checkUrlAndSignIn(
 	const url = tab.url;
 	if (
 		url &&
-		(url.includes("http://localhost:3000") || url.includes("commentcast.xyz"))
+		(url.includes("http://localhost:3000") ||
+			url.includes("https://commentcast-dashboard.vercel.app/"))
 	) {
 		signIn();
 	}

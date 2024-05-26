@@ -1,5 +1,5 @@
 export function createIssueNotification(issueId: number) {
-	const issueUrl = `http://localhost:3000/issues/${issueId}`;
+	const issueUrl = `https://commentcast-dashboard.vercel.app/issues/${issueId}`;
 	chrome.notifications.create(
 		{
 			type: "basic",

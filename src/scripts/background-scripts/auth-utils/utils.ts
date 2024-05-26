@@ -44,8 +44,8 @@ export const supabase: SupabaseClient = createClient(
 	options,
 );
 
-const isDevEnvironment = true;
+const isDevEnvironment = false;
 
 export const appUrl = isDevEnvironment
 	? "http://localhost:3000"
-	: "https://commentcast.com";
+	: "https://commentcast-dashboard.vercel.app";
