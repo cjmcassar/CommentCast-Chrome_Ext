@@ -13,6 +13,9 @@ const MainInterface = () => {
 	const handleScreenshot = () => {
 		requestScreenshot();
 	};
+	const handleMailTo = () => {
+		window.open("mailto:christopherjcassar@gmail.com");
+	};
 
 	return (
 		// TODO: split the list and larger divs into seperate components
@@ -44,7 +47,7 @@ const MainInterface = () => {
 			</div>
 
 			<div className="recent-comments border-t-2 border-gray-200 pt-4 mb-2">
-				<strong className="text-xlg ">Recent Comments</strong>
+				{/* <strong className="text-xlg ">Recent Comments</strong>
 				<Table>
 					<TableBody>
 						<TableRow>
@@ -52,11 +55,11 @@ const MainInterface = () => {
 							<TableCell className="text-right">29/03/24</TableCell>
 						</TableRow>
 					</TableBody>
-				</Table>
+				</Table> */}
 			</div>
 
 			<div className="setting">
-				<strong className="text-xlg">Settings</strong>
+				{/* <strong className="text-xlg">Settings</strong>
 				<div className=" flex justify-center mt-4 mb-6 space-x-2">
 					<Link to="/" className="relative inline-block text-lg group">
 						<span className="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
@@ -69,11 +72,15 @@ const MainInterface = () => {
 							data-rounded="rounded-lg"
 						></span>
 					</Link>
-				</div>
+				</div> */}
 
-				<Link to="/support" className="text-blue-500 hover:text-blue-800">
-					Need help? Visit Support
-				</Link>
+				<button
+					onClick={handleMailTo}
+					className="text-blue-500 hover:text-blue-800"
+					style={{ cursor: "pointer" }}
+				>
+					Need help? Email us!
+				</button>
 			</div>
 		</div>
 	);
