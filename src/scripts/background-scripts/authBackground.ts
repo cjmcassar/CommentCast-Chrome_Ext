@@ -108,7 +108,7 @@ async function handleExistingCookie(
 			});
 
 		if (sessionError) {
-			console.error("Error setting session:", sessionError);
+			console.log("Error setting session:", sessionError);
 			return undefined;
 		}
 
@@ -120,7 +120,7 @@ async function handleExistingCookie(
 			console.log("user session:", session);
 			return user;
 		} else {
-			console.error("Failed to authenticate user with Supabase:", userError);
+			console.log("Failed to authenticate user with Supabase:", userError);
 			return undefined;
 		}
 	} catch (error) {
