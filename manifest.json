@@ -23,7 +23,10 @@
 		"service_worker": "js/background.js",
 		"type": "module"
 	},
-	"host_permissions": ["https://localhost:3000/*"],
+	"host_permissions": [
+		"https://localhost:3000/*",
+		"https://commentcast-dashboard.vercel.app/*"
+	],
 	"content_scripts": [
 		{
 			"matches": ["<all_urls>"],
