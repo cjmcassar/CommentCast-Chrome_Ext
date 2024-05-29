@@ -19,7 +19,8 @@ export async function insertDBBackground(
 			body: JSON.stringify({
 				uuid: response.user.user.id,
 				screenshot: response.screenshot,
-				logs: response.logs,
+				browser_console_data: response.logs.browser_console_data,
+				browser_network_data: response.logs.browser_network_data,
 				platform_arch: response.platformInfo.platformInfo.arch,
 				platform_os: response.platformInfo.platformInfo.os,
 				url: response.url,
