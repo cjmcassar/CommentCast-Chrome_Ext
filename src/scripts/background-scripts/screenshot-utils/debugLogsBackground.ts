@@ -1,3 +1,13 @@
+import {
+	collectNetworkRequests,
+	enableNetworkForTab,
+} from "./networkRequestsBackground";
+
+interface BrowserLogs {
+	browser_console_data: any[];
+	browser_network_data: any[];
+}
+
 export const attachDebuggerToTab = async (tabId: number): Promise<void> => {
 	return new Promise((resolve, reject) => {
 		chrome.debugger.attach({ tabId }, "1.0", () => {
@@ -75,7 +85,7 @@ export const collectConsoleLogs = (
 			if (logsReceived) {
 				console.log("Logs collected:", logs);
 				chrome.debugger.onEvent.removeListener(listener);
-				await detachDebuggerFromTab(tabId);
+				// await detachDebuggerFromTab(tabId);
 				logsReceived = false;
 				resolve(logs);
 			} else if (attempts < maxAttempts) {
@@ -94,7 +104,7 @@ export const collectConsoleLogs = (
 	});
 };
 
-export const getConsoleLogs = async (): Promise<any[]> => {
+export const getConsoleLogs = async (): Promise<BrowserLogs> => {
 	try {
 		const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
 		if (tabs.length === 0) throw new Error("No active tab found");
@@ -107,11 +117,15 @@ export const getConsoleLogs = async (): Promise<any[]> => {
 
 		setTimeout(async () => {
 			await enableConsoleForTab(currentTabId);
+			await enableNetworkForTab(currentTabId);
 		}, 1000);
 
-		const logs = await collectConsoleLogs(currentTabId);
+		const [logs, requests] = await Promise.all([
+			collectConsoleLogs(currentTabId),
+			collectNetworkRequests(currentTabId),
+		]);
 
-		return logs;
+		return { browser_console_data: logs, browser_network_data: requests };
 	} catch (error) {
 		console.error(error);
 		throw error;
