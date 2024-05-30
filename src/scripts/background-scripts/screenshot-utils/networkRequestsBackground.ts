@@ -1,7 +1,3 @@
-// ... (existing code remains the same)
-
-import { detachDebuggerFromTab } from "./debugLogsBackground";
-
 export const enableNetworkForTab = async (tabId: number): Promise<void> => {
 	return new Promise((resolve, reject) => {
 		chrome.debugger.sendCommand({ tabId }, "Network.enable", {}, () => {
@@ -27,14 +23,17 @@ export const collectNetworkRequests = (
 		const requests: any[] = [];
 		let requestsReceived = false;
 		let attempts = 0;
-		const maxAttempts = 5;
+		const maxAttempts = 3;
 
 		const listener = (debuggeeId: any, message: any, params: any) => {
-			if (message === "Network.requestWillBeSent" && params && params.request) {
-				if (params.request.url.startsWith("http")) {
-					requests.push(params.request);
+			if (message === "Network.loadingFailed" && params && params.errorText) {
+				if (params.type === "Fetch") {
+					requests.push(params);
 					requestsReceived = true;
 				}
+			} else {
+				console.log("Network request:", params);
+				console.log("Network message:", message);
 			}
 		};
 		chrome.debugger.onEvent.addListener(listener);
@@ -43,7 +42,6 @@ export const collectNetworkRequests = (
 			if (requestsReceived) {
 				console.log("Network requests collected:", requests);
 				chrome.debugger.onEvent.removeListener(listener);
-				await detachDebuggerFromTab(tabId);
 				requestsReceived = false;
 				resolve(requests);
 			} else if (attempts < maxAttempts) {
@@ -53,7 +51,6 @@ export const collectNetworkRequests = (
 			} else {
 				console.log("Maximum attempts reached without receiving requests.");
 				chrome.debugger.onEvent.removeListener(listener);
-				await detachDebuggerFromTab(tabId);
 				resolve(requests);
 			}
 		};
