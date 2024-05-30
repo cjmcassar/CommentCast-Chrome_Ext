@@ -27,7 +27,7 @@ export const attachDebuggerToTab = async (tabId: number): Promise<void> => {
 
 export const enableConsoleForTab = async (tabId: number): Promise<void> => {
 	return new Promise((resolve, reject) => {
-		chrome.debugger.sendCommand({ tabId }, "Console.enable", {}, () => {
+		chrome.debugger.sendCommand({ tabId }, "Runtime.enable", {}, () => {
 			if (chrome.runtime.lastError) {
 				reject(
 					new Error(
@@ -36,6 +36,7 @@ export const enableConsoleForTab = async (tabId: number): Promise<void> => {
 				);
 			} else {
 				console.log("Console enabled for tab:", tabId);
+
 				resolve();
 			}
 		});
@@ -67,14 +68,22 @@ export const collectConsoleLogs = (
 		const logs: any[] = [];
 		let logsReceived = false;
 		let attempts = 0;
-		const maxAttempts = 5;
+		const maxAttempts = 3;
 
 		const listener = (debuggeeId: any, message: any, params: any) => {
-			if (message === "Console.messageAdded" && params && params.message) {
-				logs.push(params.message);
+			if (
+				message === "Runtime.consoleAPICalled" &&
+				params &&
+				params.args.length > 0
+			) {
+				logs.push(params);
+				logsReceived = true;
+			} else if (message === "Runtime.exceptionThrown") {
+				logs.push(params);
 				logsReceived = true;
 			} else {
 				console.log("Debugger log:", params);
+				console.log("Debugger entries:", params.args);
 				console.log("Debugger message:", message);
 				console.log("Debugger debuggeeId:", debuggeeId);
 			}
@@ -85,7 +94,7 @@ export const collectConsoleLogs = (
 			if (logsReceived) {
 				console.log("Logs collected:", logs);
 				chrome.debugger.onEvent.removeListener(listener);
-				// await detachDebuggerFromTab(tabId);
+
 				logsReceived = false;
 				resolve(logs);
 			} else if (attempts < maxAttempts) {
@@ -95,7 +104,7 @@ export const collectConsoleLogs = (
 			} else {
 				console.log("Maximum attempts reached without receiving logs.");
 				chrome.debugger.onEvent.removeListener(listener);
-				await detachDebuggerFromTab(tabId);
+
 				resolve(logs);
 			}
 		};
@@ -124,7 +133,7 @@ export const getConsoleLogs = async (): Promise<BrowserLogs> => {
 			collectConsoleLogs(currentTabId),
 			collectNetworkRequests(currentTabId),
 		]);
-
+		await detachDebuggerFromTab(currentTabId);
 		return { browser_console_data: logs, browser_network_data: requests };
 	} catch (error) {
 		console.error(error);
