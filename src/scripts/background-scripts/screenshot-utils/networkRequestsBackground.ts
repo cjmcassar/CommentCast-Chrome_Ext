@@ -17,7 +17,7 @@ export const enableNetworkForTab = async (tabId: number): Promise<void> => {
 
 export const collectNetworkRequests = (
 	tabId: number,
-	timeout: number = 1000,
+	timeout: number = 500,
 ): Promise<any[]> => {
 	return new Promise(async (resolve) => {
 		const requests: any[] = [];
