@@ -48,4 +48,4 @@ const isDevEnvironment = false;
 
 export const appUrl = isDevEnvironment
 	? "http://localhost:3000"
-	: "https://commentcast-dashboard.vercel.app";
+	: "https://app.commentcast.dev";

@@ -135,7 +135,7 @@ export function getAuthCookie(
 	console.log("Attempting to get auth cookie...");
 	chrome.cookies.get(
 		{
-			url: "https://commentcast-dashboard.vercel.app",
+			url: appUrl,
 			name: "sb-yvdtkxnmiehnrwmjkjxp-auth-token",
 		},
 		(cookie) => {
