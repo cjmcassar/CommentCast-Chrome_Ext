@@ -1,5 +1,5 @@
 {
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"manifest_version": 3,
 	"name": "CommentCast",
 	"description": "CommentCast is a tool that enables users to find bugs and share them with their team.",
@@ -29,7 +29,8 @@
 	},
 	"host_permissions": [
 		"https://localhost:3000/*",
-		"https://commentcast-dashboard.vercel.app/*"
+		"https://commentcast-dashboard.vercel.app/*",
+		"https://app.commentcast.dev/*"
 	],
 	"content_scripts": [
 		{
